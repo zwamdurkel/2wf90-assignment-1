@@ -1,0 +1,99 @@
+Demo DEFINITIONS ::= BEGIN
+
+        Exercises ::= SET {
+                exercises       SEQUENCE OF Exercise
+        }
+
+    Add ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        answer          GeneralString
+    }
+
+    ModAdd ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        m               GeneralString,
+        answer          GeneralString
+    }
+
+    Subtract ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        answer          GeneralString
+    }
+
+    ModSubtract ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        m               GeneralString,
+        answer          GeneralString
+    }
+
+    Multiply ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        answer          GeneralString,
+        count-mul       INTEGER,
+        count-add       INTEGER
+    }
+
+    ModMultiply ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        m               GeneralString,
+        answer          GeneralString
+    }
+
+    Karatsuba ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        answer          GeneralString,
+        count-mul       INTEGER,
+        count-add       INTEGER
+    }
+
+    Reduce ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        m               GeneralString,
+        answer          GeneralString
+    }
+
+    Euclid ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        y               GeneralString,
+        answ-d          GeneralString,
+        answ-a          GeneralString,
+        answ-b          GeneralString
+    }
+
+    Inverse ::= SET {
+        radix           INTEGER,
+        x               GeneralString,
+        m               GeneralString,
+        answer          GeneralString
+    }
+
+    Exercise ::= CHOICE {
+        add             Add,
+        mod-add         ModAdd,
+        subtract        Subtract,
+        mod-subtract    ModSubtract,
+        multiply        Multiply,
+        mod-multiply    ModMultiply,
+        karatsuba       Karatsuba,
+        reduce          Reduce,
+        euclid          Euclid,
+        inverse         Inverse
+    }
+
+END
