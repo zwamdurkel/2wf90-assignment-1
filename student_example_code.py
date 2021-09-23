@@ -68,12 +68,42 @@ def arrayToNumber(array):
 def arrayAdd(x, y, base):
 
     # Get max size to fill rest with zeros + 1 for carry
-    size = len(max(x, y)) + 1
+    size = len(max(x, y))
        
     # Extend numbers with trailing 0 for addition (doesn't change value)
     x += [0] * (size - len(x))
     y += [0] * (size - len(y))
 
+    if x[-1] == '-' and y[-1] == '-':
+        x.pop()
+        y.pop()
+        answer = arrayAdd(x, y, base)
+        answer.append('-')
+        return answer
+
+    if x[-1] == '-':
+        x.pop()
+        if x[-1] > y[-1]:
+            answer = arraySub(x, y, base)
+            answer.append('-')
+            return answer
+        else: 
+            answer = arraySub(y, x, base)
+            return answer
+
+    if y[-1] == '-':
+        y.pop()
+        if x[-1] < y[-1]:
+            answer = arraySub(y, x, base)
+            answer.append('-')
+            return answer
+        else: 
+            answer = arraySub(x, y, base) 
+            return answer
+
+    size += 1
+    x += [0]
+    y += [0]
     # Prepare empty carry and answer array (I don't wanna do .append())
     carry = [0] * size
     answer = [0] * size
@@ -104,6 +134,33 @@ def arraySub(x, y, base):
     x += [0] * (size - len(x))
     y += [0] * (size - len(y))
 
+    if x[-1] == '-' and y[-1] == '-':
+        x.pop()
+        y.pop()
+        if x[-1] > y[-1]:
+            answer = arraySub(x, y, base)
+            answer.append('-')
+            return answer
+        else:
+            answer = arraySub(y, x, base)
+            return answer
+
+    if x[-1] == '-':
+        x.pop()
+        answer = arrayAdd(x, y, base)
+        answer.append('-')
+        return answer
+
+    if y[-1] == '-':
+        y.pop()
+        answer = arrayAdd(x, y, base)
+        return answer
+
+    if x[-1] < y[-1]:
+        answer = arraySub(y, x, base)
+        answer.append('-')
+        return answer
+
     answer = [0] * size
        
     for i in range(size):
@@ -111,6 +168,11 @@ def arraySub(x, y, base):
             x[i+1] -= 1
             x[i] += base
         answer[i] = x[i] - y[i]
+    
+    # Remove trailing 0
+    while answer[-1] == 0:
+        answer.pop()
+        if answer == [0]: break
     
     return answer
 
@@ -127,31 +189,8 @@ for exercise in my_exercises['exercises']:
         # Convert to array to handle more easily
         x = numberToArray(params['x'], params['radix'])
         y = numberToArray(params['y'], params['radix'])
-        answer = ''
 
-        if x[-1] == '-' and y[-1] == '-':
-            x.pop()
-            y.pop()
-            answer = arrayAdd(x, y, params['radix'])
-            answer.append('-')
-        elif x[-1] == '-' and y[-1] != '-':
-            x.pop()
-            if int(params['x'][1:], base=params['radix']) > int(params['y'], base=params['radix']):
-                answer = arraySub(x, y, params['radix'])
-                answer.append('-')
-            else: 
-                answer = arraySub(y, x, params['radix']) 
-        elif x[-1] != '-' and y[-1] == '-':
-            y.pop()
-            if int(params['x'], base=params['radix']) < int(params['y'][1:], base=params['radix']):
-                answer = arraySub(y, x, params['radix'])
-                answer.append('-')
-            else: 
-                answer = arraySub(x, y, params['radix']) 
-        else:
-            answer = arrayAdd(x, y, params['radix'])
-
-        params['answer'] = arrayToNumber(answer)
+        params['answer'] = arrayToNumber(arrayAdd(x, y, params['radix']))
         print(f"Answer: {params['answer']}")
     
     if operation == 'subtract':
@@ -160,31 +199,8 @@ for exercise in my_exercises['exercises']:
         # Convert to array to handle more easily
         x = numberToArray(params['x'], params['radix'])
         y = numberToArray(params['y'], params['radix'])
-        answer = ''
 
-        if x[-1] == '-' and y[-1] == '-':
-            x.pop()
-            y.pop()
-            if int(params['x'][1:], base=params['radix']) > int(params['y'][1:], base=params['radix']):
-                answer = arraySub(x, y, params['radix'])
-                answer.append('-')
-            else:
-                answer = arraySub(y, x, params['radix'])
-        elif x[-1] == '-' and y[-1] != '-':
-            x.pop()
-            answer = arrayAdd(x, y, params['radix'])
-            answer.append('-')
-        elif x[-1] != '-' and y[-1] == '-':
-            y.pop()
-            answer = arrayAdd(x, y, params['radix'])
-        else:
-            if int(params['x'], base=params['radix']) < int(params['y'], base=params['radix']):
-                answer = arraySub(y, x, params['radix'])
-                answer.append('-')
-            else: 
-                answer = arraySub(x, y, params['radix'])
-
-        params['answer'] = arrayToNumber(answer)
+        params['answer'] = arrayToNumber(arraySub(x, y, params['radix']))
         print(f"Answer: {params['answer']}")
 
     if operation == 'multiply':
