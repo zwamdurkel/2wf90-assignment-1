@@ -35,14 +35,76 @@ exercise_file.close()
 # Create answer JSON
 my_answers = {'exercises': []}
 
+# Will convert a number to an array of digits. first element = radix^0, 2nd = radix^1, etc
+def numberToArray(number, base):
+    array = []
+
+    for i in range(len(number)):
+        array.append(int(number[-i - 1], base=base))
+
+    return array
+
+
+# Will convert array to number as string with 0-9a-f as digits
+def arrayToNumber(array):
+    number = ''
+
+    # Convert digit to proper string representation
+    for digit in array:
+        if digit < 10:
+            number = str(digit) + number
+        if digit >= 10:
+            number = chr(ord('a')+digit-10) + number
+
+    return number
+
+# Adds numbers in array representation with variable base
+def arrayAdd(x, y, base):
+
+    # Get max size to fill rest with zeros + 1 for carry
+    size = len(max(x, y)) + 1
+       
+    # Extend numbers with trailing 0 for addition (doesn't change value)
+    x += [0] * (size - len(x))
+    y += [0] * (size - len(y))
+
+    # Prepare empty carry and answer array (I don't wanna do .append())
+    carry = [0] * size
+    answer = [0] * size
+
+    # Do digit wise addition (and carry)
+    for i in range(size):
+        digit = x[i] + y[i] + carry[i]
+
+        while digit >= base:
+            digit -= base
+            carry[i + 1] += 1
+
+        answer[i] = digit
+
+    # Remove trailing 0
+    while answer[-1] == 0:
+        answer.pop()
+        if answer == [0]: break
+
+    return answer
+
 # Loop over exercises and solve
 for exercise in my_exercises['exercises']:
     operation = exercise[0]                                        # get operation type
     params = exercise[1]                                           # get parameters
+
+    print(f'Running exercise:\n{exercise}')
     
     if operation == 'add':
         ### Do addition ###
-        params['answer'] = '7'
+
+        # Convert to array to handle more easily
+        x = numberToArray(params['x'], params['radix'])
+        y = numberToArray(params['y'], params['radix'])
+
+        params['answer'] = arrayToNumber(arrayAdd(x, y, params['radix']))
+        print(f"Answer: {params['answer']}")
     
     if operation == 'subtract':
         ### Do subtraction ###
@@ -75,4 +137,3 @@ for exercise in my_exercises['exercises']:
 my_file = open(ans_loc, 'wb+')                                       # write to binary file
 my_file.write(json.dumps(my_answers).encode())                       # add encoded exercise list
 my_file.close()
-
