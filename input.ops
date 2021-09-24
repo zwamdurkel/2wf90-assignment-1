@@ -1,0 +1,20 @@
+{
+    "exercises": [
+        {
+            "add": {
+                "radix": 10,
+                "x": "3",
+                "y": "4",
+                "answer": ""
+            }
+        },
+        {
+            "subtract": {
+                "radix": 16,
+                "x": "-2ef3",
+                "y": "4b5",
+                "answer": ""
+            }
+        }
+    ]
+}

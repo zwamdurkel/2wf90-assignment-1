@@ -1,25 +1,25 @@
 import asn1tools as asn
 import json
 
-### AfS software assignment 1 - example code ###
+### AfS software assignment 1 ###
 
 # set file names
 base_location = './'
 ops_loc = base_location + 'operations.asn'
-exs_loc = base_location + 'my_exercises'
-ans_loc = base_location + 'my_answers'
+exs_loc = base_location + 'input.ops'
+ans_loc = base_location + 'output.ops'
 
-###### Creating an exercise list file ######
+# ###### Creating an exercise list file ######
 
-# How to create an exercise JSON file containing one addition exercise
-exercises = {'exercises' : []}                                     # initialize empty exercise list
-ex = {'add' : {'radix' : 10, 'x' : '3', 'y' : '4', 'answer' : ''}} # create add exercise
-exercises['exercises'].append(ex)                                  # add exercise to list
+# # How to create an exercise JSON file containing one addition exercise
+# exercises = {'exercises' : []}                                     # initialize empty exercise list
+# ex = {'add' : {'radix' : 10, 'x' : '3', 'y' : '4', 'answer' : ''}} # create add exercise
+# exercises['exercises'].append(ex)                                  # add exercise to list
 
-# Encode exercise list and print to file
-my_file = open(exs_loc, 'wb+')                                     # write to binary file
-my_file.write(json.dumps(exercises).encode())                      # add encoded exercise list
-my_file.close()
+# # Encode exercise list and print to file
+# my_file = open(exs_loc, 'wb+')                                     # write to binary file
+# my_file.write(json.dumps(exercises).encode())                      # add encoded exercise list
+# my_file.close()
 
 ###### Using an exercise list file ######
 
@@ -67,22 +67,30 @@ def arrayToNumber(array):
 # Adds numbers in array representation with variable base
 def arrayAdd(x, y, base):
 
-    # Get max size to fill rest with zeros + 1 for carry
-    size = len(max(x, y))
-       
-    # Extend numbers with trailing 0 for addition (doesn't change value)
+    negativeX = False
+    negativeY = False
+
+    if x[-1] == '-':
+        x.pop()
+        negativeX = True
+    if y[-1] == '-':
+        y.pop()
+        negativeY = True
+
+    # Get max size to fill rest with zeros
+    size = max(len(x), len(y))
+    # Extend numbers with trailing 0 (doesn't change value)
     x += [0] * (size - len(x))
     y += [0] * (size - len(y))
 
-    if x[-1] == '-' and y[-1] == '-':
-        x.pop()
-        y.pop()
+    # If both numbers are negative
+    if negativeX and negativeY:
         answer = arrayAdd(x, y, base)
         answer.append('-')
         return answer
 
-    if x[-1] == '-':
-        x.pop()
+    # If x is negative
+    if negativeX:
         if x[-1] > y[-1]:
             answer = arraySub(x, y, base)
             answer.append('-')
@@ -91,8 +99,8 @@ def arrayAdd(x, y, base):
             answer = arraySub(y, x, base)
             return answer
 
-    if y[-1] == '-':
-        y.pop()
+    # If y is negative
+    if negativeY:
         if x[-1] < y[-1]:
             answer = arraySub(y, x, base)
             answer.append('-')
@@ -101,42 +109,50 @@ def arrayAdd(x, y, base):
             answer = arraySub(x, y, base) 
             return answer
 
-    size += 1
-    x += [0]
-    y += [0]
-    # Prepare empty carry and answer array (I don't wanna do .append())
-    carry = [0] * size
-    answer = [0] * size
+    # Else...
+
+    # Prepare empty carry and answer array
+    answer = []
+    carry = 0
 
     # Do digit wise addition (and carry)
     for i in range(size):
-        digit = x[i] + y[i] + carry[i]
+        answer.append( x[i] + y[i] + carry )
+        carry = 0
 
-        while digit >= base:
-            digit -= base
-            carry[i + 1] += 1
+        if answer[i] >= base:
+            answer[i] -= base
+            carry = 1
 
-        answer[i] = digit
+    if carry == 1:
+        answer.append(1)
 
     # Remove trailing 0
-    while answer[-1] == 0:
+    while answer[-1] == 0 and answer != [0]:
         answer.pop()
-        if answer == [0]: break
 
     return answer
 
 def arraySub(x, y, base):
 
-    # Get max size to fill rest with zeros 
-    size = len(max(x, y)) 
-       
-    # Extend numbers with trailing 0 (doesn't change value)
-    x += [0] * (size - len(x))
-    y += [0] * (size - len(y))
+    negativeX = False
+    negativeY = False
 
-    if x[-1] == '-' and y[-1] == '-':
+    if x[-1] == '-':
         x.pop()
+        negativeX = True
+    if y[-1] == '-':
         y.pop()
+        negativeY = True
+
+    # Get max size to fill rest with zeros 
+    size = max(len(x), len(y))
+    # Extend numbers with trailing 0 (doesn't change value)
+    y += [0] * (size - len(y))
+    x += [0] * (size - len(x))
+
+    # If both numbers are negative
+    if negativeX and negativeY:
         if x[-1] > y[-1]:
             answer = arraySub(x, y, base)
             answer.append('-')
@@ -145,34 +161,40 @@ def arraySub(x, y, base):
             answer = arraySub(y, x, base)
             return answer
 
-    if x[-1] == '-':
-        x.pop()
+    # If x is negative
+    if negativeX:
         answer = arrayAdd(x, y, base)
         answer.append('-')
         return answer
 
-    if y[-1] == '-':
-        y.pop()
+    # If y is negative
+    if negativeY:
         answer = arrayAdd(x, y, base)
         return answer
 
+    # If x is smaller than y
     if x[-1] < y[-1]:
         answer = arraySub(y, x, base)
         answer.append('-')
         return answer
 
-    answer = [0] * size
+    # Else...
+    
+    # Prepare empty carry and answer array
+    answer = []
+    carry = 0
        
     for i in range(size):
-        if x[i] < y[i]:
-            x[i+1] -= 1
-            x[i] += base
-        answer[i] = x[i] - y[i]
+        answer.append( x[i] - y[i] - carry )
+        carry = 0
+
+        if answer[i] < 0:
+            answer[i] += base
+            carry = 1
     
     # Remove trailing 0
-    while answer[-1] == 0:
+    while answer[-1] == 0 and answer != [0]:
         answer.pop()
-        if answer == [0]: break
     
     return answer
 

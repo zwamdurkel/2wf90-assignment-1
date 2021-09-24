@@ -1,0 +1,1 @@
+{"exercises": [{"add": {"radix": 10, "x": "3", "y": "4", "answer": "7"}}, {"subtract": {"radix": 16, "x": "-2ef3", "y": "4b5", "answer": "-33a8"}}]}
