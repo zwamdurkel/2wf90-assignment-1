@@ -199,7 +199,7 @@ def arraySub(x, y, base):
     
     return answer
 
-def arrayMult(x, y, base):
+def arrayMultiply(x, y, base):
 
     negativeX = False
     negativeY = False
@@ -207,41 +207,53 @@ def arrayMult(x, y, base):
     if x[-1] == '-':
         x.pop()
         negativeX = True
+
     if y[-1] == '-':
         y.pop()
         negativeY = True
 
-    # If both numbers are negative
-    if negativeX and negativeY:
-        answer = arrayMult(x, y, base)
-        return answer
-    #If only one is negative
-    elif negativeX or negativeY:
-        answer = arrayMult(x, y, base)
+    lengthX = len(x)
+    lengthY = len(y)
+    mul = 0
+    add = 0
+
+    answer = [0] * (lengthX + lengthY)
+
+    for i in range(lengthX):
+        carry = 0
+        for j in range(lengthY):
+            t = answer[i + j] + x[i] * y[j]
+            carry = t // base
+            answer[i + j] = t - carry * base
+            answer[i + j + 1] += carry
+            add += 3
+            mul += 2
+
+    if answer[-1] == 0:
+        answer.pop()
+
+    if negativeX ^ negativeY:
         answer.append('-')
-        return answer
 
-    # Else...
-
-    # Prepare empty carry, answer array and 2d answer array
-    answerArray = [[]] * len(x)
-    answer = []
-    carry = 0
-
-    # Do digit wise addition (and carry)
-    for i in range(len(x)):
-        for j in range(len(y)):
-            answerArray[i] += [0] * i
-            answerArray[i].append( x[i] * y[j] + carry )
-            carry = math.floor(answerArray[i][j]/base)
+    return answer, mul, add
+def arrayReduce(x,m,base):
     
-    if carry > 0:
-        answerArray.append(carry)
-    
-    for i in range(len(answerArray)):
-        answer = arrayAdd(answerArray[i], answer, base)
+    negativeX = False
 
-    return answer
+    if x[-1] == '-':
+        x.pop()
+        negativeX = True
+
+    xp = x
+
+    i = len(x)-len(m)
+
+    for j in range(i,0):
+        m2 = [0]*j + m
+        while xp >= m2:
+            xp -= m2
+
+
 
 # Loop over exercises and solve
 for exercise in my_exercises['exercises']:
@@ -276,9 +288,16 @@ for exercise in my_exercises['exercises']:
         x = numberToArray(params['x'], params['radix'])
         y = numberToArray(params['y'], params['radix'])
 
-        params['answer'] = arrayToNumber(arrayMult(x, y, params['radix']))
-        print(f"Answer: {params['answer']}")
-    
+        answer, mul, add = arrayMultiply(x, y, params['radix'])
+
+        params['answer'] = arrayToNumber(answer)
+        params['count-mul'] = mul
+        params['count-add'] = add
+
+        print(
+            f"Answer: {params['answer']}, {params['count-mul']}, {params['count-add']}")
+    if operation == 'reduce':
+
     if operation == 'mod-add':
         ### Do modular addition ###
         params['answer'] = '1234'
