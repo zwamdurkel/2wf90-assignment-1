@@ -11,4 +11,4 @@ You can now start working on the assignment
 
 Be sure to commit once you're done!!!
 
-`student_example_code.py` contains a working example. You can start from there
+`main.py` contains a working example. You can start from there
