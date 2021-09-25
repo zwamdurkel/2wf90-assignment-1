@@ -36,13 +36,6 @@ exercise_file.close()
 # Create answer JSON
 my_answers = {'exercises': []}
 
-# FINNEANS GEBIED!!!
-
-def euclid(x, y, base):
-    print('') 
-
-# FINNEANS GEBIED!
-
 # Checks for two number arrays if one is smaller than the other
 def arraySmaller(x, y, base):
     return int(arrayToNumber(x), base=base) < int(arrayToNumber(y), base=base)
@@ -50,6 +43,53 @@ def arraySmaller(x, y, base):
 # Checks for two number arrays if one is greater than the other
 def arrayGreater(x, y, base):
     return int(arrayToNumber(x), base=base) > int(arrayToNumber(y), base=base)
+
+# FINNEANS GEBIED!!!
+
+def euclid(x, y, base):
+
+    xNew = x
+    yNew = y
+
+    if xNew[-1] == '-':
+        xNew.pop()
+    if yNew[-1] == '-':
+        yNew.pop()
+
+    x1 = [1]
+    x2 = [0]
+    y1 = [0]
+    y2 = [1]
+
+    while arrayGreater(yNew, [0], base):
+        q = arrayReduce(xNew, yNew, base).floor()
+        r = arraySub(xNew, arrayMultiply(q, yNew, base), base)
+        xNew = yNew
+        yNew = r
+        x3 = arraySub(x1, arrayMultiply(q, x2, base), base)
+        y3 = arraySub(y1, arrayMultiply(q, y2, base), base)
+        x1 = x2
+        y1 = y2
+        x2 = x3
+        y2 = y3
+
+    d = xNew
+    if arrayGreater(x, [0], base) or x == [0]:
+        a = x1
+    else:
+        a = x1.append('-')
+
+    if arrayGreater(y, [0], base) or y == [0]:
+        b = y1
+    else:
+        b = y1.append('-')
+
+    return(d, a, b)
+
+def inverse(x, y, base):
+    print('')
+
+# FINNEANS GEBIED!
 
 # Will convert a number to an array of digits. first element = radix^0, 2nd = radix^1, etc
 def numberToArray(number, base):
