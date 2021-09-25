@@ -36,6 +36,21 @@ exercise_file.close()
 # Create answer JSON
 my_answers = {'exercises': []}
 
+# FINNEANS GEBIED!!!
+
+def euclid(x, y, base):
+    print('') 
+
+# FINNEANS GEBIED!
+
+# Checks for two number arrays if one is smaller than the other
+def arraySmaller(x, y, base):
+    return int(arrayToNumber(x), base=base) < int(arrayToNumber(y), base=base)
+
+# Checks for two number arrays if one is greater than the other
+def arrayGreater(x, y, base):
+    return int(arrayToNumber(x), base=base) > int(arrayToNumber(y), base=base)
+
 # Will convert a number to an array of digits. first element = radix^0, 2nd = radix^1, etc
 def numberToArray(number, base):
     array = []
@@ -47,7 +62,6 @@ def numberToArray(number, base):
             array.append(int(number[-i - 1], base=base))
 
     return array
-
 
 # Will convert array to number as string with 0-9a-f as digits
 def arrayToNumber(array):
@@ -92,7 +106,7 @@ def arrayAdd(x, y, base):
 
     # If x is negative
     if negativeX:
-        if x[-1] > y[-1]:
+        if arrayGreater(x, y, base):
             answer = arraySub(x, y, base)
             answer.append('-')
             return answer
@@ -102,7 +116,7 @@ def arrayAdd(x, y, base):
 
     # If y is negative
     if negativeY:
-        if x[-1] < y[-1]:
+        if arraySmaller(x, y, base):
             answer = arraySub(y, x, base)
             answer.append('-')
             return answer
@@ -154,7 +168,7 @@ def arraySub(x, y, base):
 
     # If both numbers are negative
     if negativeX and negativeY:
-        if x[-1] > y[-1]:
+        if arrayGreater(x, y, base):
             answer = arraySub(x, y, base)
             answer.append('-')
             return answer
@@ -174,7 +188,7 @@ def arraySub(x, y, base):
         return answer
 
     # If x is smaller than y
-    if x[-1] < y[-1]:
+    if arraySmaller(x, y, base):
         answer = arraySub(y, x, base)
         answer.append('-')
         return answer
@@ -236,7 +250,8 @@ def arrayMultiply(x, y, base):
         answer.append('-')
 
     return answer, mul, add
-def arrayReduce(x,m,base):
+
+def arrayReduce(x, m, base):
     
     negativeX = False
 
@@ -248,12 +263,22 @@ def arrayReduce(x,m,base):
 
     i = len(x)-len(m)
 
-    for j in range(i,0):
+    for j in range(i,-1,-1):
         m2 = [0]*j + m
-        while xp >= m2:
-            xp -= m2
+        while not arraySmaller(xp, m2, base):
+            xp = arraySub(xp, m2, base)
+    
+    if not negativeX or xp == 0:
+        answer = xp
+    else:
+        answer = arraySub(m, xp, base)
+    return answer
+    
+def modAdd(x,y,m,base):
+    return arrayReduce(arrayAdd(x,y),m, base)
 
-
+def modSub(x,y,m,base):
+    return arrayReduce(arraySub(x,y),m, base)
 
 # Loop over exercises and solve
 for exercise in my_exercises['exercises']:
@@ -297,7 +322,11 @@ for exercise in my_exercises['exercises']:
         print(
             f"Answer: {params['answer']}, {params['count-mul']}, {params['count-add']}")
     if operation == 'reduce':
+        x = numberToArray(params['x'], params['radix'])
+        m = numberToArray(params['m'], params['radix']) 
 
+        params['answer'] = arrayToNumber(arrayReduce(x, m, params['radix'])) 
+        print(f"Answer: {params['answer']}")
     if operation == 'mod-add':
         ### Do modular addition ###
         params['answer'] = '1234'

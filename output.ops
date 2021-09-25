@@ -1,1 +1,1 @@
-{"exercises": [{"add": {"radix": 10, "x": "3", "y": "4", "answer": "7"}}, {"subtract": {"radix": 16, "x": "-2ef3", "y": "4b5", "answer": "-33a8"}}, {"multiply": {"radix": 16, "x": "-6ac", "y": "5f", "answer": "-279d4", "count-mul": 12, "count-add": 18}}]}
+{"exercises": [{"add": {"radix": 10, "x": "3", "y": "4", "answer": "7"}}, {"subtract": {"radix": 16, "x": "-2ef3", "y": "4b5", "answer": "-33a8"}}, {"multiply": {"radix": 16, "x": "-6ac", "y": "5f", "answer": "-279d4", "count-mul": 12, "count-add": 18}}, {"reduce": {"radix": 12, "x": "20", "m": "5", "answer": "4"}}]}

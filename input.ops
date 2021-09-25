@@ -25,6 +25,14 @@
                 "count-mul": "",
                 "count-add": ""
             }
+        },
+        {
+            "reduce": {
+                "radix": 12,
+                "x": "20",
+                "m": "5",
+                "answer": ""
+            }
         }
     ]
 }
