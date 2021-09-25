@@ -1,5 +1,6 @@
 import asn1tools as asn
 import json
+import math
 
 ### AfS software assignment 1 ###
 
@@ -196,6 +197,50 @@ def arraySub(x, y, base):
     while answer[-1] == 0 and answer != [0]:
         answer.pop()
     
+    return answer
+
+def arrayMult(x, y, base):
+
+    negativeX = False
+    negativeY = False
+
+    if x[-1] == '-':
+        x.pop()
+        negativeX = True
+    if y[-1] == '-':
+        y.pop()
+        negativeY = True
+
+    # If both numbers are negative
+    if negativeX and negativeY:
+        answer = arrayMult(x, y, base)
+        return answer
+    #If only one is negative
+    elif negativeX or negativeY:
+        answer = arrayMult(x, y, base)
+        answer.append('-')
+        return answer
+
+    # Else...
+
+    # Prepare empty carry, answer array and 2d answer array
+    answerArray = [[]] * len(x)
+    answer = []
+    carry = 0
+
+    # Do digit wise addition (and carry)
+    for i in range(len(x)):
+        for j in range(len(y)):
+            answerArray[i] += [0] * i
+            answerArray[i].append( x[i] * y[j] + carry )
+            carry = math.floor(answerArray[i][j]/base)
+    
+    if carry > 0:
+        answerArray.append(carry)
+    
+    for i in range(len(answerArray)):
+        answer = arrayAdd(answerArray[i], answer, base)
+
     return answer
 
 # Loop over exercises and solve
