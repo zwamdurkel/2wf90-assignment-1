@@ -15,6 +15,16 @@
                 "y": "4b5",
                 "answer": ""
             }
+        },
+        {
+            "multiply": {
+                "radix": 16,
+                "x": "-6ac",
+                "y": "5f",
+                "answer": "",
+                "count-mul": "",
+                "count-add": ""
+            }
         }
     ]
 }
