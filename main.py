@@ -288,21 +288,24 @@ def arrayDivide(x, m, base):
 
 
 def euclid(x, y, base):
-    # Euclidean extended algorithm
+# Euclidean extended algorithm
 
     xNew = x.copy()
     yNew = y.copy()
 
+    # take the absolute values of x and y
     if xNew[-1] == '-':
         xNew.pop()
     if yNew[-1] == '-':
         yNew.pop()
 
+    # assigning x1, x2, y1, y2
     x1 = [1]
     x2 = [0]
     y1 = [0]
     y2 = [1]
 
+    # while y is bigger than 0 do the main part of the euclidean algorithm
     while arrayGreater(yNew, [0], base):
         q = arrayDivide(xNew, yNew, base)
         r = arraySub(xNew, arrayMultiply(q, yNew, base)[0], base)
@@ -315,29 +318,33 @@ def euclid(x, y, base):
         x2 = x3
         y2 = y3
 
+    # if x is smaller than zero make a negative
     d = xNew
     if arrayGreater(x, [0], base) or x == [0]:
         a = x1
     else:
         a = x1.append('-')
 
+    # if y is smaller than zero make b negative
     if arrayGreater(y, [0], base) or y == [0]:
         b = y1
     else:
         b = y1.append('-')
 
+    # return the appropriate values
     return(d, a, b)
 
 
 def inverse(x, m, base):
-    # Modular inverse algorithm
+# Modular inverse algorithm
 
     xNew = x.copy()
     mNew = m.copy()
+
     x1 = [1]
     x2 = [0]
 
-    # while arrayGreater(mNew, [0], base):
+    # while arrayGreater(mNew, [0], base) do the main part of the algorithm
     while mNew[-1] > 0:
         q = arrayDivide(xNew, mNew, base)
         r = arraySub(xNew, arrayMultiply(q, mNew, base)[0], base)
@@ -347,52 +354,53 @@ def inverse(x, m, base):
         x1 = x2
         x2 = x3
 
+    # answer if no inverse is found (x != 0)
     answer = 'ERROR - inverse does not exist'
 
+    # check if it was succesfull (inverse was found x = 1)
     if xNew == [1]:
         answer = x1
 
+    # return the appropriate answer
     return answer
 
 
 def modMult(x, y, m, base):
-    # Modular multiplication algorithm
+# Modular multiplication algorithm
 
-    if len(m) % 2 == [0]:
+    # assign n an even value at least as big as the length of m (in the correct base)
+    if len(m) % 2 == 0:
         n = len(m)
     else:
         n = len(m) + 1
 
+    # here we calculate b^(n/2) first in its own base since every base in itself is [0, 1] so we dont have to do this multiple times within the algorithm
     bo = [0, 1]
-    b = [0, 1]
-    h = n/2
-    while h > 0:
-        b = arrayMultiply(b, bo, base)[0]
-        h = h - 1
 
-    xlo = arrayReduce(x, b, base)
-    xhi = arrayMultiply(arraySub(x, xlo, base), b, base)[0]
+    # this is the main part of the modular multiplication algorithm
+    xlo = x[:int(n/2)]
+    xhi = x[int(n/2):]
 
-    ylo = arrayReduce(y, b, base)
-    yhi = arrayMultiply(arraySub(y, ylo, base), b, base)[0]
+    ylo = y[:int(n/2)]
+    yhi = y[int(n/2):]
 
-    z0 = arrayMultiply(xlo, ylo, base)[0]
-    z1 = arrayReduce(arrayAdd(arrayMultiply(xhi, ylo, base)[
-                     0], arrayMultiply(xlo, yhi, base)[0], base), m, base)
+    z0 = arrayReduce(arrayMultiply(xlo, ylo, base)[0], m, base)
+    z1 = arrayReduce(arrayAdd(arrayMultiply(xhi, ylo, base)[0], arrayMultiply(xlo, yhi, base)[0], base), m, base)
     z2 = arrayReduce(arrayMultiply(xhi, yhi, base)[0], m, base)
 
     z = z2
 
-    for i in range(1, int(n/2)):
-        z = arrayMultiply(bo, z, base)[0]
+    for i in range(1, int(n/2 + 1)):
+        z = arrayReduce(arrayMultiply(bo, z, base)[0], m, base)
 
     z = arrayReduce(arrayAdd(z, z1, base), m, base)
 
-    for i in range(1, int(n/2)):
-        z = arrayMultiply(bo, z, base)[0]
+    for i in range(1, int(n/2 + 1)):
+        z = arrayReduce(arrayMultiply(bo, z, base)[0], m, base)
 
     z = arrayReduce(arrayAdd(z, z0, base), m, base)
 
+    # return the appropriate answer
     return z
 
 

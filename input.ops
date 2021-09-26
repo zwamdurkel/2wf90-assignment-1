@@ -1,74 +1,12 @@
 {
     "exercises": [
         {
-            "add": {
-                "radix": 10,
-                "x": "3",
-                "y": "4",
-                "answer": ""
-            }
-        },
-        {
-            "subtract": {
-                "radix": 16,
-                "x": "-2ef3",
-                "y": "4b5",
-                "answer": ""
-            }
-        },
-        {
-            "multiply": {
-                "radix": 16,
-                "x": "-6ac",
-                "y": "5f",
-                "answer": "",
-                "count-mul": "",
-                "count-add": ""
-            }
-        },
-        {
-            "reduce": {
-                "radix": 12,
-                "x": "20",
-                "m": "5",
-                "answer": ""
-            }
-        },
-        {
-            "inverse": {
-                "radix": 10,
-                "x": "3",
-                "m": "8",
-                "answer": ""
-            }
-        },
-        {
-            "euclid": {
-                "radix": 10,
-                "x": "45",
-                "y": "37",
-                "answ-d": "",
-                "answ-a": "",
-                "answ-b": ""
-            }
-        },
-        {
             "mod-multiply": {
-                "radix": 16,
-                "x": "69",
-                "y": "21",
-                "m": "13",
+                "radix": 10,
+                "x": "545",
+                "y": "43578",
+                "m": "41",
                 "answer": ""
-            }
-        },
-        {
-            "karatsuba": {
-                "radix": 16,
-                "x": "-6ac",
-                "y": "5f",
-                "answer": "",
-                "count-mul": "",
-                "count-add": ""
             }
         }
     ]
