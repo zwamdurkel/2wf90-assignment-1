@@ -105,6 +105,7 @@ def inverse(x, m, base):
     
     answer = 'ERROR - inverse does not exist'
 
+    # check if it was succesfull
     if xNew == [1]:
         answer = x1
 
