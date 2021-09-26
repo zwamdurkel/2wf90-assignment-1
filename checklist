@@ -1,10 +1,10 @@
-Add *
-Subtract*
-Multiply*
-Reduce*
-ModAdd*
-ModSubtract*
-ModMultiply
-Karatsuba 
-Euclid
-Inverse
+Add - a
+Subtract - a
+Multiply - a
+Reduce - t
+ModAdd - t
+ModSubtract - t
+ModMultiply - f
+Karatsuba - emre maken!
+Euclid - f
+Inverse - f
