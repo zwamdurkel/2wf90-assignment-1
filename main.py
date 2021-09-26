@@ -29,7 +29,7 @@ import math
 # set file names
 base_location = './'
 ops_loc = base_location + 'operations.asn'
-exs_loc = base_location + 'test_exercises_students_answers'
+exs_loc = base_location + 'input.ops'
 ans_loc = base_location + 'output.ops'
 
 
