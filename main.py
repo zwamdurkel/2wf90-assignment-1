@@ -360,25 +360,26 @@ def arrayMultiply(x, y, base):
     return answer, mul, add
 
 def arrayReduce(x, m, base):
-    
+    #makes copies of x and m so they dont get changed when the function is called in another function
     xNew = x.copy()
     mNew = m.copy()
     
     negativeX = False
-
+    #check if x is negative and if so make it positive and set negativeX true
     if xNew[-1] == '-':
         xNew.pop()
         negativeX = True
-
+    #make a copy of xNew to modify so xNew doesn't have to get changed
     xp = xNew
-
+    #calculate the difference in order of magnitude of x and m
     i = len(xNew)-len(mNew)
-
+    #loops from i to 0 and adds that number as an order of magnitude to m in the variable m2
     for j in range(i,-1,-1):
         m2 = [0]*j + mNew
+        #checks if xp is still larger then m2 and if so it subtracts m2 from xp
         while not arraySmaller(xp, m2, base):
             xp = arraySub(xp, m2, base)
-    
+    #checks wether x was negative or not and changes the answer accordingly
     if not negativeX or xp == 0:
         answer = xp
     else:
@@ -400,11 +401,13 @@ def arrayDivide(x, m, base):
     
     return q
 
-def modAdd(x, y, m, base):
-    return arrayReduce(arrayAdd(x, y), m, base)
+def modAdd(x,y,m,base):
+    #first adds x and y and then does modular reduction on the sum with mod m
+    return arrayReduce(arrayAdd(x, y, base),m, base)
 
-def modSub(x, y, m, base):
-    return arrayReduce(arraySub(x, y), m, base)
+def modSub(x,y,m,base):
+    #first subtracts y from x and then does modular reduction on the difference with mod m
+    return arrayReduce(arraySub(x, y, base),m, base)
 
 
 
