@@ -64,8 +64,8 @@
         {
             "karatsuba": {
                 "radix": 16,
-                "x": "-4ad",
-                "y": "2de",
+                "x": "-6ac",
+                "y": "5f",
                 "answer": "",
                 "count-mul": "",
                 "count-add": ""

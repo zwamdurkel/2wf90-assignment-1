@@ -4,179 +4,53 @@ import math
 
 ### AfS software assignment 1 ###
 
+# Layout of file:
+#  1. global variables
+#  2. def arraySmaller(x, y, base)      Aloys
+#  3. def arrayGreater(x, y, base)      Aloys
+#  4. def numberToArray(number, base)   Aloys
+#  5. def arrayToNumber(array)          Aloys
+#  6. def arrayAdd(x, y, base)          Aloys
+#  7. def arraySub(x, y, base)          Aloys
+#  8. def arrayMultiply(x, y, base)     Aloys
+#  9. def arrayDivide(x, m, base)       Aloys
+# 10. def euclid(x, y, base)            Finnean
+# 11. def inverse(x, m, base)           Finnean
+# 12. def modMult(x, y, m, base)        Finnean
+# 13. def arrayReduce(x, m, base)       Thomas
+# 14. def modAdd(x, y, m, base)         Thomas
+# 15. def modSub(x, y, m, base)         Thomas
+# 16. def karatsuba(x, y, base)         Emre
+# 17. read exercise file
+# 18. run exercises
+# 19. write answers
+
+
 # set file names
 base_location = './'
 ops_loc = base_location + 'operations.asn'
-exs_loc = base_location + 'input.ops'
+exs_loc = base_location + 'test_exercises_students_answers'
 ans_loc = base_location + 'output.ops'
-
-# ###### Creating an exercise list file ######
-
-# # How to create an exercise JSON file containing one addition exercise
-# exercises = {'exercises' : []}                                     # initialize empty exercise list
-# ex = {'add' : {'radix' : 10, 'x' : '3', 'y' : '4', 'answer' : ''}} # create add exercise
-# exercises['exercises'].append(ex)                                  # add exercise to list
-
-# # Encode exercise list and print to file
-# my_file = open(exs_loc, 'wb+')                                     # write to binary file
-# my_file.write(json.dumps(exercises).encode())                      # add encoded exercise list
-# my_file.close()
-
-###### Using an exercise list file ######
-
-# Compile specification
-spec = asn.compile_files(ops_loc, codec="jer")
-
-# Read exercise list
-# open binary file
-exercise_file = open(exs_loc, 'rb')
-# read byte array
-file_data = exercise_file.read()
-# decode after specification
-my_exercises = spec.decode('Exercises', file_data)
-exercise_file.close()
-
-# Create answer JSON
-my_answers = {'exercises': []}
-
-# Checks for two number arrays if one is smaller than the other
 
 
 def arraySmaller(x, y, base):
-    return int(arrayToNumber(x), base=base) < int(arrayToNumber(y), base=base)
+    # Checks for two number arrays if one is smaller than the other
+    # Made by Aloys
 
-# Checks for two number arrays if one is greater than the other
+    return int(arrayToNumber(x), base=base) < int(arrayToNumber(y), base=base)
 
 
 def arrayGreater(x, y, base):
+    # Checks for two number arrays if one is greater than the other
+    # Made by Aloys
+
     return int(arrayToNumber(x), base=base) > int(arrayToNumber(y), base=base)
 
-def euclid(x, y, base):
-# Euclidean extended algorithm
 
-    xNew = x.copy()
-    yNew = y.copy()
-
-    # take the absolute values of x and y
-    if xNew[-1] == '-':
-        xNew.pop()
-    if yNew[-1] == '-':
-        yNew.pop()
-
-    # assigning x1, x2, y1, y2
-    x1 = [1]
-    x2 = [0]
-    y1 = [0]
-    y2 = [1]
-
-    # while y is bigger than 0 do the main part of the euclidean algorithm
-    while arrayGreater(yNew, [0], base):
-        q = arrayDivide(xNew, yNew, base)
-        r = arraySub(xNew, arrayMultiply(q, yNew, base)[0], base)
-        xNew = yNew
-        yNew = r
-        x3 = arraySub(x1, arrayMultiply(q, x2, base)[0], base)
-        y3 = arraySub(y1, arrayMultiply(q, y2, base)[0], base)
-        x1 = x2
-        y1 = y2
-        x2 = x3
-        y2 = y3
-
-    # if x is smaller than zero make a negative
-    d = xNew
-    if arrayGreater(x, [0], base) or x == [0]:
-        a = x1
-    else:
-        a = x1.append('-')
-
-    # if y is smaller than zero make b negative
-    if arrayGreater(y, [0], base) or y == [0]:
-        b = y1
-    else:
-        b = y1.append('-')
-
-    # return the appropriate values
-    return(d, a, b)
-
-
-def inverse(x, m, base):
-# Modular inverse algorithm
-
-    xNew = x.copy()
-    mNew = m.copy()
-
-    x1 = [1]
-    x2 = [0]
-
-    # while arrayGreater(mNew, [0], base) do the main part of the algorithm
-    while mNew[-1] > 0:
-        q = arrayDivide(xNew, mNew, base)
-        r = arraySub(xNew, arrayMultiply(q, mNew, base)[0], base)
-        xNew = mNew
-        mNew = r
-        x3 = arraySub(x1, arrayMultiply(q, x2, base)[0], base)
-        x1 = x2
-        x2 = x3
-
-    # answer if no inverse is found (x != 0)
-    answer = 'ERROR - inverse does not exist'
-
-    # check if it was succesfull (inverse was found x = 1)
-    if xNew == [1]:
-        answer = x1
-
-    # return the appropriate answer
-    return answer
-
-
-def modMult(x, y, m, base):
-# Modular multiplication algorithm
-
-    # assign n an even value at least as big as the length of m (in the correct base)
-    if len(m) % 2 == [0]:
-        n = len(m)
-    else:
-        n = len(m) + 1
-
-    # here we calculate b^(n/2) first in its own base since every base in itself is [0, 1] so we dont have to do this multiple times within the algorithm
-    bo = [0, 1]
-    b = [0, 1]
-    h = n/2
-
-    # basically b^(n/2)
-    while h > 0:
-        b = arrayMultiply(b, bo, base)[0]
-        h = h - 1
-
-    # this is the main part of the modular multiplication algorithm
-    xlo = arrayReduce(x, b, base)
-    xhi = arrayMultiply(arraySub(x, xlo, base), b, base)[0]
-
-    ylo = arrayReduce(y, b, base)
-    yhi = arrayMultiply(arraySub(y, ylo, base), b, base)[0]
-
-    z0 = arrayMultiply(xlo, ylo, base)[0]
-    z1 = arrayReduce(arrayAdd(arrayMultiply(xhi, ylo, base)[0], arrayMultiply(xlo, yhi, base)[0], base), m, base)
-    z2 = arrayReduce(arrayMultiply(xhi, yhi, base)[0], m, base)
-
-    z = z2
-
-    for i in range(1, int(n/2)):
-        z = arrayMultiply(bo, z, base)
-
-    z = arrayReduce(arrayAdd(z, z1, base), m, base)
-
-    for i in range(1, int(n/2)):
-        z = arrayMultiply(bo, z, base)
-
-    z = arrayReduce(arrayAdd(z, z0, base), m, base)
-
-    # return the appropriate answer
-    return z
-
-
-# Will convert a number to an array of digits. first element = radix^0, 2nd = radix^1, etc
 def numberToArray(number, base):
+    # Will convert a number to an array of digits. first element = radix^0, 2nd = radix^1, etc
+    # Made by Aloys
+
     array = []
 
     for i in range(len(number)):
@@ -187,10 +61,11 @@ def numberToArray(number, base):
 
     return array
 
-# Will convert array to number as string with 0-9a-f as digits
-
 
 def arrayToNumber(array):
+    # Will convert array to number as string with 0-9a-f as digits
+    # Made by Aloys
+
     number = ''
 
     # Convert digit to proper string representation
@@ -205,10 +80,10 @@ def arrayToNumber(array):
 
     return number
 
-# Adds numbers in array representation with variable base
-
 
 def arrayAdd(x, y, base):
+    # Adds numbers in array representation with variable base
+    # Made by Aloys
 
     xNew = x.copy()
     yNew = y.copy()
@@ -281,6 +156,8 @@ def arrayAdd(x, y, base):
 
 
 def arraySub(x, y, base):
+    # Subtracts numbers in array representation with variable base
+    # Made by Aloys
 
     xNew = x.copy()
     yNew = y.copy()
@@ -350,6 +227,7 @@ def arraySub(x, y, base):
 
 
 def arrayMultiply(x, y, base):
+    # Multiplies two numbers in array representation with variable base
 
     xNew = x.copy()
     yNew = y.copy()
@@ -391,7 +269,135 @@ def arrayMultiply(x, y, base):
     return answer, mul, add
 
 
+def arrayDivide(x, m, base):
+    # Similar to arrayReduce, but only give quotient instead of remainder
+
+    i = len(x)-len(m)
+    q = [0] * len(x)
+
+    for j in range(i, -1, -1):
+        m2 = [0]*j + m
+        while not arraySmaller(x, m2, base):
+            q[j] += 1
+            x = arraySub(x, m2, base)
+
+    while q[-1] == 0 and q != [0]:
+        q.pop()
+
+    return q
+
+
+def euclid(x, y, base):
+    # Euclidean extended algorithm
+
+    xNew = x.copy()
+    yNew = y.copy()
+
+    if xNew[-1] == '-':
+        xNew.pop()
+    if yNew[-1] == '-':
+        yNew.pop()
+
+    x1 = [1]
+    x2 = [0]
+    y1 = [0]
+    y2 = [1]
+
+    while arrayGreater(yNew, [0], base):
+        q = arrayDivide(xNew, yNew, base)
+        r = arraySub(xNew, arrayMultiply(q, yNew, base)[0], base)
+        xNew = yNew
+        yNew = r
+        x3 = arraySub(x1, arrayMultiply(q, x2, base)[0], base)
+        y3 = arraySub(y1, arrayMultiply(q, y2, base)[0], base)
+        x1 = x2
+        y1 = y2
+        x2 = x3
+        y2 = y3
+
+    d = xNew
+    if arrayGreater(x, [0], base) or x == [0]:
+        a = x1
+    else:
+        a = x1.append('-')
+
+    if arrayGreater(y, [0], base) or y == [0]:
+        b = y1
+    else:
+        b = y1.append('-')
+
+    return(d, a, b)
+
+
+def inverse(x, m, base):
+    # Modular inverse algorithm
+
+    xNew = x.copy()
+    mNew = m.copy()
+    x1 = [1]
+    x2 = [0]
+
+    # while arrayGreater(mNew, [0], base):
+    while mNew[-1] > 0:
+        q = arrayDivide(xNew, mNew, base)
+        r = arraySub(xNew, arrayMultiply(q, mNew, base)[0], base)
+        xNew = mNew
+        mNew = r
+        x3 = arraySub(x1, arrayMultiply(q, x2, base)[0], base)
+        x1 = x2
+        x2 = x3
+
+    answer = 'ERROR - inverse does not exist'
+
+    if xNew == [1]:
+        answer = x1
+
+    return answer
+
+
+def modMult(x, y, m, base):
+    # Modular multiplication algorithm
+
+    if len(m) % 2 == [0]:
+        n = len(m)
+    else:
+        n = len(m) + 1
+
+    bo = [0, 1]
+    b = [0, 1]
+    h = n/2
+    while h > 0:
+        b = arrayMultiply(b, bo, base)[0]
+        h = h - 1
+
+    xlo = arrayReduce(x, b, base)
+    xhi = arrayMultiply(arraySub(x, xlo, base), b, base)[0]
+
+    ylo = arrayReduce(y, b, base)
+    yhi = arrayMultiply(arraySub(y, ylo, base), b, base)[0]
+
+    z0 = arrayMultiply(xlo, ylo, base)[0]
+    z1 = arrayReduce(arrayAdd(arrayMultiply(xhi, ylo, base)[
+                     0], arrayMultiply(xlo, yhi, base)[0], base), m, base)
+    z2 = arrayReduce(arrayMultiply(xhi, yhi, base)[0], m, base)
+
+    z = z2
+
+    for i in range(1, int(n/2)):
+        z = arrayMultiply(bo, z, base)[0]
+
+    z = arrayReduce(arrayAdd(z, z1, base), m, base)
+
+    for i in range(1, int(n/2)):
+        z = arrayMultiply(bo, z, base)[0]
+
+    z = arrayReduce(arrayAdd(z, z0, base), m, base)
+
+    return z
+
+
 def arrayReduce(x, m, base):
+    # Does modular reduction on x with mod m. Uses variable base
 
     xNew = x.copy()
     mNew = m.copy()
@@ -418,60 +424,57 @@ def arrayReduce(x, m, base):
     return answer
 
 
-def arrayDivide(x, m, base):
-    i = len(x)-len(m)
-    q = [0] * len(x)
-
-    for j in range(i, -1, -1):
-        m2 = [0]*j + m
-        while not arraySmaller(x, m2, base):
-            q[j] += 1
-            x = arraySub(x, m2, base)
-
-    while q[-1] == 0 and q != [0]:
-        q.pop()
-
-    return q
-
-
 def modAdd(x, y, m, base):
-    return arrayReduce(arrayAdd(x, y), m, base)
+    # Modular addition of two numbers x and y in array representation, mod = m and base is variable
+    return arrayReduce(arrayAdd(x, y, base), m, base)
 
 
 def modSub(x, y, m, base):
-    return arrayReduce(arraySub(x, y), m, base)
+    # Modular subtraction of two numbers x and y in array representation, mod = m and base is variable
+    return arrayReduce(arraySub(x, y, base), m, base)
 
 
-### !!!EMRES AREA TO MAKE COOL KARATSUBA ALGORITHM!!! ###
+def karatsuba(x, y, base):
+    if (x < 10) or (y < 10):
+        return arrayMultiply(x, y, base)[0]
 
-def karatsuba(x, y, m, base):
-    if len(m) % 2 == [0]:  # Checking if the length of the number is even or odd
-        n = len(m)  # If it's even
+    if len(x) % 2 == [0]:  # Checking if the length of the number is even or odd
+        n = len(x)  # If it's even
     else:
-        n = len(m) + 1  # If it's odd
+        n = len(x) + 1  # If it's odd
 
-    bo = [0, 1]
-    b = [0, 1]
-    h = n/2
-    while h > 0:
-        b = arrayMultiply(b, bo, base)[0]
-        h = h-1
+    m = n/2
 
-    xlo = arrayReduce(x, b, base)  # Computing xlo, xhi, ylo, yhi
-    xhi = arrayMultiply(arraySub(x, xlo, base), b, base)[0]
+    xlo = arrayReduce(x, 10**m, base)  # Computing xlo, xhi, ylo, yhi
+    xhi = arrayDivide(x, 10**m, base)[0]
 
-    ylo = arrayReduce(y, b, base)
-    yhi = arrayMultiply(arraySub(y, ylo, base), b, base)[0]
+    ylo = arrayReduce(y, 10**m, base)
+    yhi = arrayDivide(y, 10**m, base)[0]
 
-    # z0 = xlo*ylo         #Computing z0 and z2
-    z0 = arrayMultiply(xlo, ylo, base)[0]
-    z2 = arrayMultiply(xhi, yhi, base)[0]  # z2 = xhi*yhi
-    z = arraySub(arrayMultiply(arrayAdd(xhi, xlo, base), arrayAdd(yhi, ylo, base), base)[
-                 0], arrayAdd(z2, z0, base), base)  # z is the end product xy
+    z0 = karatsuba(xlo, ylo, base)
+    z1 = karatsuba(xlo + xhi, ylo + yhi, base)
+    z2 = karatsuba(xhi, yhi, base)
 
-    return z
-### !!!END OF EMRES AREA TO MAKE COOL KARATSUBA ALGORITHM!!! ###
+    z3 = (z2 * 10**(m*2))+((z1-z2-z0)*10**(m))+z0
+    return z3
 
+
+###### Using an exercise list file ######
+
+# Compile specification
+spec = asn.compile_files(ops_loc, codec="jer")
+
+# Read exercise list
+# open binary file
+exercise_file = open(exs_loc, 'rb')
+# read byte array
+file_data = exercise_file.read()
+# decode after specification
+my_exercises = spec.decode('Exercises', file_data)
+exercise_file.close()
+
+# Create answer JSON
+my_answers = {'exercises': []}
 
 # Loop over exercises and solve
 for exercise in my_exercises['exercises']:
@@ -592,7 +595,6 @@ for exercise in my_exercises['exercises']:
 
         print(f"Answer: {params['answer']}")
 
-# MORE OF EMRES AREA TO MAKE COOL KARATSUBA STUFF (I ALREADY MADE THIS STUFF FOR YOU <3 - Finnean)
     if operation == 'karatsuba':
         ### Do karatsuba algorithm ###
 
