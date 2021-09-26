@@ -228,10 +228,12 @@ def arraySub(x, y, base):
 
 def arrayMultiply(x, y, base):
     # Multiplies two numbers in array representation with variable base
+    # Made by Aloys
 
     xNew = x.copy()
     yNew = y.copy()
 
+    # Handle negative numbers
     negativeX = False
     negativeY = False
 
@@ -250,6 +252,7 @@ def arrayMultiply(x, y, base):
 
     answer = [0] * (lengthX + lengthY)
 
+    # Multiplication algorithm
     for i in range(lengthX):
         carry = 0
         for j in range(lengthY):
@@ -260,9 +263,11 @@ def arrayMultiply(x, y, base):
             add += 3
             mul += 2
 
+    # Remove trailing 0
     if answer[-1] == 0:
         answer.pop()
 
+    # Append '-' if negative
     if negativeX ^ negativeY:
         answer.append('-')
 
@@ -271,6 +276,7 @@ def arrayMultiply(x, y, base):
 
 def arrayDivide(x, m, base):
     # Similar to arrayReduce, but only give quotient instead of remainder
+    # Made by Aloys
 
     i = len(x)-len(m)
     q = [0] * len(x)
@@ -407,21 +413,27 @@ def modMult(x, y, m, base):
 def arrayReduce(x, m, base):
     # Does modular reduction on x with mod m. Uses variable base
 
+    # makes copies of x and m so they dont get changed when the function is called in another function
     xNew = x.copy()
     mNew = m.copy()
 
     negativeX = False
 
+    # check if x is negative and if so make it positive and set negativeX true
     if xNew[-1] == '-':
         xNew.pop()
         negativeX = True
 
+    # make a copy of xNew to modify so xNew doesn't have to get changed
     xp = xNew
 
+    # calculate the difference in order of magnitude of x and m
     i = len(xNew)-len(mNew)
 
+    # loops from i to 0 and adds that number as an order of magnitude to m in the variable m2
     for j in range(i, -1, -1):
         m2 = [0]*j + mNew
+        # checks if xp is still larger then m2 and if so it subtracts m2 from xp
         while not arraySmaller(xp, m2, base):
             xp = arraySub(xp, m2, base)
 
@@ -433,12 +445,12 @@ def arrayReduce(x, m, base):
 
 
 def modAdd(x, y, m, base):
-    # Modular addition of two numbers x and y in array representation, mod = m and base is variable
+    # First adds x and y and then does modular reduction on the sum with mod m
     return arrayReduce(arrayAdd(x, y, base), m, base)
 
 
 def modSub(x, y, m, base):
-    # Modular subtraction of two numbers x and y in array representation, mod = m and base is variable
+    # First subtracts y from x and then does modular reduction on the difference with mod m
     return arrayReduce(arraySub(x, y, base), m, base)
 
 
