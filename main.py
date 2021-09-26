@@ -548,7 +548,7 @@ for exercise in my_exercises['exercises']:
         y = numberToArray(params['y'], params['radix'])
         m = numberToArray(params['m'], params['radix'])
 
-        params['answer'] = arrayToNumber(modAdd(x, y, m, params['radix']))
+        params['answer'] = arrayToNumber(modSub(x, y, m, params['radix']))
         print(f"Answer: {params['answer']}")
 
     if operation == 'euclid':
