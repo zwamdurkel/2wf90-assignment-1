@@ -25,26 +25,35 @@ ans_loc = base_location + 'output.ops'
 ###### Using an exercise list file ######
 
 # Compile specification
-spec = asn.compile_files(ops_loc, codec = "jer")
+spec = asn.compile_files(ops_loc, codec="jer")
 
-# Read exercise list 
-exercise_file = open(exs_loc, 'rb')                                # open binary file
-file_data = exercise_file.read()                                   # read byte array
-my_exercises = spec.decode('Exercises', file_data)                 # decode after specification
-exercise_file.close()                                              
+# Read exercise list
+# open binary file
+exercise_file = open(exs_loc, 'rb')
+# read byte array
+file_data = exercise_file.read()
+# decode after specification
+my_exercises = spec.decode('Exercises', file_data)
+exercise_file.close()
 
 # Create answer JSON
 my_answers = {'exercises': []}
 
 # Checks for two number arrays if one is smaller than the other
+
+
 def arraySmaller(x, y, base):
     return int(arrayToNumber(x), base=base) < int(arrayToNumber(y), base=base)
 
 # Checks for two number arrays if one is greater than the other
+
+
 def arrayGreater(x, y, base):
     return int(arrayToNumber(x), base=base) > int(arrayToNumber(y), base=base)
 
 # Euclidean extended algorithm
+
+
 def euclid(x, y, base):
 
     xNew = x.copy()
@@ -72,7 +81,6 @@ def euclid(x, y, base):
         x2 = x3
         y2 = y3
 
-
     d = xNew
     if arrayGreater(x, [0], base) or x == [0]:
         a = x1
@@ -87,12 +95,14 @@ def euclid(x, y, base):
     return(d, a, b)
 
 # Modular inverse algorithm
+
+
 def inverse(x, m, base):
     xNew = x.copy()
     mNew = m.copy()
     x1 = [1]
     x2 = [0]
-    
+
     # while arrayGreater(mNew, [0], base):
     while mNew[-1] > 0:
         q = arrayDivide(xNew, mNew, base)
@@ -102,40 +112,42 @@ def inverse(x, m, base):
         x3 = arraySub(x1, arrayMultiply(q, x2, base)[0], base)
         x1 = x2
         x2 = x3
-    
+
     answer = 'ERROR - inverse does not exist'
 
     # check if it was succesfull
     if xNew == [1]:
         answer = x1
 
-    return answer   
+    return answer
 
-# Modular multiplication algorithm 
+# Modular multiplication algorithm
+
+
 def modMult(x, y, m, base):
     if len(m) % 2 == [0]:
         n = len(m)
-    else: 
+    else:
         n = len(m) + 1
 
-    bo = [0,1]
-    b = [0,1]
+    bo = [0, 1]
+    b = [0, 1]
     h = n/2
     while h > 0:
         b = arrayMultiply(b, bo, base)[0]
-        h = h -1
-
+        h = h - 1
 
     xlo = arrayReduce(x, b, base)
-    xhi = arrayMultiply(arraySub(x, xlo, base) , b, base)[0]
+    xhi = arrayMultiply(arraySub(x, xlo, base), b, base)[0]
 
     ylo = arrayReduce(y, b, base)
-    yhi = arrayMultiply(arraySub(y, ylo, base) , b, base)[0]
+    yhi = arrayMultiply(arraySub(y, ylo, base), b, base)[0]
 
     z0 = arrayMultiply(xlo, ylo, base)[0]
-    z1 = arrayReduce(arrayAdd(arrayMultiply(xhi, ylo, base)[0], arrayMultiply(xlo, yhi, base)[0], base), m, base)
+    z1 = arrayReduce(arrayAdd(arrayMultiply(xhi, ylo, base)[
+                     0], arrayMultiply(xlo, yhi, base)[0], base), m, base)
     z2 = arrayReduce(arrayMultiply(xhi, yhi, base)[0], m, base)
-    
+
     z = z2
 
     for i in range(1, int(n/2)):
@@ -149,7 +161,7 @@ def modMult(x, y, m, base):
     z = arrayReduce(arrayAdd(z, z0, base), m, base)
 
     return z
-    
+
 
 # Will convert a number to an array of digits. first element = radix^0, 2nd = radix^1, etc
 def numberToArray(number, base):
@@ -164,6 +176,8 @@ def numberToArray(number, base):
     return array
 
 # Will convert array to number as string with 0-9a-f as digits
+
+
 def arrayToNumber(array):
     number = ''
 
@@ -180,6 +194,8 @@ def arrayToNumber(array):
     return number
 
 # Adds numbers in array representation with variable base
+
+
 def arrayAdd(x, y, base):
 
     xNew = x.copy()
@@ -213,7 +229,7 @@ def arrayAdd(x, y, base):
             answer = arraySub(xNew, yNew, base)
             answer.append('-')
             return answer
-        else: 
+        else:
             answer = arraySub(yNew, xNew, base)
             return answer
 
@@ -223,8 +239,8 @@ def arrayAdd(x, y, base):
             answer = arraySub(yNew, xNew, base)
             answer.append('-')
             return answer
-        else: 
-            answer = arraySub(xNew, yNew, base) 
+        else:
+            answer = arraySub(xNew, yNew, base)
             return answer
 
     # Else...
@@ -235,7 +251,7 @@ def arrayAdd(x, y, base):
 
     # Do digit wise addition (and carry)
     for i in range(size):
-        answer.append( xNew[i] + yNew[i] + carry )
+        answer.append(xNew[i] + yNew[i] + carry)
         carry = 0
 
         if answer[i] >= base:
@@ -250,6 +266,7 @@ def arrayAdd(x, y, base):
         answer.pop()
 
     return answer
+
 
 def arraySub(x, y, base):
 
@@ -266,7 +283,7 @@ def arraySub(x, y, base):
         yNew.pop()
         negativeY = True
 
-    # Get max size to fill rest with zeros 
+    # Get max size to fill rest with zeros
     size = max(len(xNew), len(yNew))
     # Extend numbers with trailing 0 (doesn't change value)
     yNew += [0] * (size - len(yNew))
@@ -300,30 +317,31 @@ def arraySub(x, y, base):
         return answer
 
     # Else...
-    
+
     # Prepare empty carry and answer array
     answer = []
     carry = 0
-       
+
     for i in range(size):
-        answer.append( xNew[i] - yNew[i] - carry )
+        answer.append(xNew[i] - yNew[i] - carry)
         carry = 0
 
         if answer[i] < 0:
             answer[i] += base
             carry = 1
-    
+
     # Remove trailing 0
     while answer[-1] == 0 and answer != [0]:
         answer.pop()
-    
+
     return answer
+
 
 def arrayMultiply(x, y, base):
 
     xNew = x.copy()
     yNew = y.copy()
-    
+
     negativeX = False
     negativeY = False
 
@@ -360,11 +378,12 @@ def arrayMultiply(x, y, base):
 
     return answer, mul, add
 
+
 def arrayReduce(x, m, base):
-    
+
     xNew = x.copy()
     mNew = m.copy()
-    
+
     negativeX = False
 
     if xNew[-1] == '-':
@@ -375,22 +394,23 @@ def arrayReduce(x, m, base):
 
     i = len(xNew)-len(mNew)
 
-    for j in range(i,-1,-1):
+    for j in range(i, -1, -1):
         m2 = [0]*j + mNew
         while not arraySmaller(xp, m2, base):
             xp = arraySub(xp, m2, base)
-    
+
     if not negativeX or xp == 0:
         answer = xp
     else:
         answer = arraySub(mNew, xp, base)
     return answer
 
+
 def arrayDivide(x, m, base):
     i = len(x)-len(m)
     q = [0] * len(x)
 
-    for j in range(i,-1,-1):
+    for j in range(i, -1, -1):
         m2 = [0]*j + m
         while not arraySmaller(x, m2, base):
             q[j] += 1
@@ -398,33 +418,58 @@ def arrayDivide(x, m, base):
 
     while q[-1] == 0 and q != [0]:
         q.pop()
-    
+
     return q
+
 
 def modAdd(x, y, m, base):
     return arrayReduce(arrayAdd(x, y), m, base)
+
 
 def modSub(x, y, m, base):
     return arrayReduce(arraySub(x, y), m, base)
 
 
-
-
 ### !!!EMRES AREA TO MAKE COOL KARATSUBA ALGORITHM!!! ###
 
-# stuff made by emre
+def karatsuba(x, y, m, base):
+    if len(m) % 2 == [0]:  # Checking if the length of the number is even or odd
+        n = len(m)  # If it's even
+    else:
+        n = len(m) + 1  # If it's odd
 
+    bo = [0, 1]
+    b = [0, 1]
+    h = n/2
+    while h > 0:
+        b = arrayMultiply(b, bo, base)[0]
+        h = h-1
+
+    xlo = arrayReduce(x, b, base)  # Computing xlo, xhi, ylo, yhi
+    xhi = arrayMultiply(arraySub(x, xlo, base), b, base)[0]
+
+    ylo = arrayReduce(y, b, base)
+    yhi = arrayMultiply(arraySub(y, ylo, base), b, base)[0]
+
+    # z0 = xlo*ylo         #Computing z0 and z2
+    z0 = arrayMultiply(xlo, ylo, base)[0]
+    z2 = arrayMultiply(xhi, yhi, base)[0]  # z2 = xhi*yhi
+    z = arraySub(arrayMultiply(arrayAdd(xhi, xlo, base), arrayAdd(yhi, ylo, base), base)[
+                 0], arrayAdd(z2, z0, base), base)  # z is the end product xy
+
+    return z
 ### !!!END OF EMRES AREA TO MAKE COOL KARATSUBA ALGORITHM!!! ###
-
 
 
 # Loop over exercises and solve
 for exercise in my_exercises['exercises']:
-    operation = exercise[0]                                        # get operation type
-    params = exercise[1]                                           # get parameters
+    # get operation type
+    operation = exercise[0]
+    # get parameters
+    params = exercise[1]
 
     print(f'Running exercise:\n{exercise}')
-    
+
     if operation == 'add':
         ### Do addition ###
 
@@ -434,7 +479,7 @@ for exercise in my_exercises['exercises']:
 
         params['answer'] = arrayToNumber(arrayAdd(x, y, params['radix']))
         print(f"Answer: {params['answer']}")
-    
+
     if operation == 'subtract':
         ### Do subtraction ###
 
@@ -464,9 +509,9 @@ for exercise in my_exercises['exercises']:
     if operation == 'reduce':
         ### Do modular reduction ###
         x = numberToArray(params['x'], params['radix'])
-        m = numberToArray(params['m'], params['radix']) 
+        m = numberToArray(params['m'], params['radix'])
 
-        params['answer'] = arrayToNumber(arrayReduce(x, m, params['radix'])) 
+        params['answer'] = arrayToNumber(arrayReduce(x, m, params['radix']))
         print(f"Answer: {params['answer']}")
 
     if operation == 'mod-add':
@@ -475,7 +520,7 @@ for exercise in my_exercises['exercises']:
         # Convert to array to handle more easily
         x = numberToArray(params['x'], params['radix'])
         y = numberToArray(params['y'], params['radix'])
-        m = numberToArray(params['m'], params['radix']) 
+        m = numberToArray(params['m'], params['radix'])
 
         params['answer'] = arrayToNumber(modAdd(x, y, m, params['radix']))
         print(f"Answer: {params['answer']}")
@@ -486,17 +531,17 @@ for exercise in my_exercises['exercises']:
         # Convert to array to handle more easily
         x = numberToArray(params['x'], params['radix'])
         y = numberToArray(params['y'], params['radix'])
-        m = numberToArray(params['m'], params['radix']) 
+        m = numberToArray(params['m'], params['radix'])
 
         params['answer'] = arrayToNumber(modAdd(x, y, m, params['radix']))
         print(f"Answer: {params['answer']}")
-    
+
     if operation == 'euclid':
         ### Do euclidean algorithm ###
 
         # Convert to array to handle more easily
         x = numberToArray(params['x'], params['radix'])
-        y = numberToArray(params['y'], params['radix']) 
+        y = numberToArray(params['y'], params['radix'])
 
         d, a, b = euclid(x, y, params['radix'])
 
@@ -504,17 +549,18 @@ for exercise in my_exercises['exercises']:
         params['answ-a'] = arrayToNumber(a)
         params['answ-b'] = arrayToNumber(b)
 
-        print(f"Answer: {params['answ-d']}, {params['answ-a']}, {params['answ-b']}")
+        print(
+            f"Answer: {params['answ-d']}, {params['answ-a']}, {params['answ-b']}")
 
     if operation == 'inverse':
         ### Do inverse ###
 
         ### Do inverse algorithm ###
         x = numberToArray(params['x'], params['radix'])
-        m = numberToArray(params['m'], params['radix']) 
+        m = numberToArray(params['m'], params['radix'])
 
         answer = inverse(x, m, params['radix'])
-        
+
         if answer == 'ERROR - inverse does not exist':
             params['answer'] = 'ERROR - inverse does not exist'
         else:
@@ -527,8 +573,8 @@ for exercise in my_exercises['exercises']:
 
         # Convert to array to handle more easily
         x = numberToArray(params['x'], params['radix'])
-        y = numberToArray(params['y'], params['radix']) 
-        m = numberToArray(params['m'], params['radix']) 
+        y = numberToArray(params['y'], params['radix'])
+        m = numberToArray(params['m'], params['radix'])
 
         params['answer'] = arrayToNumber(modMult(x, y, m, params['radix']))
 
@@ -558,6 +604,8 @@ for exercise in my_exercises['exercises']:
 ###### Creating an answers list file ######
 
 # Save exercises with answers to file
-my_file = open(ans_loc, 'wb+')                                       # write to binary file
-my_file.write(json.dumps(my_answers).encode())                       # add encoded exercise list
+# write to binary file
+my_file = open(ans_loc, 'wb+')
+# add encoded exercise list
+my_file.write(json.dumps(my_answers).encode())
 my_file.close()

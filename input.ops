@@ -60,6 +60,16 @@
                 "m": "13",
                 "answer": ""
             }
+        },
+        {
+            "karatsuba": {
+                "radix": 16,
+                "x": "-4ad",
+                "y": "2de",
+                "answer": "",
+                "count-mul": "",
+                "count-add": ""
+            }
         }
     ]
 }
